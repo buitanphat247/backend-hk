@@ -1,5 +1,21 @@
-const RoleService = require('../services/RoleService');
+/**
+ * RoleController.js
+ * 
+ * Controller layer - Xử lý HTTP requests/responses cho Role
+ * Chịu trách nhiệm: HTTP handling, validation, response formatting
+ * Gọi Service layer để thực hiện business logic
+ * 
+ * Luồng: HTTP Request → Controller → Service → Repository → Database
+ */
 
+const RoleService = require('../Service/RoleService');
+
+/**
+ * Tạo mới role
+ * POST /api/v1/roles
+ * Body: { name }
+ * Auth: Admin required
+ */
 const createRole = async (req, res) => {
   try {
     const { name } = req.body;
@@ -10,6 +26,11 @@ const createRole = async (req, res) => {
   }
 };
 
+/**
+ * Lấy thông tin role theo ID
+ * GET /api/v1/roles/:id
+ * Params: id (ObjectId)
+ */
 const getRoleById = async (req, res) => {
   try {
     const role = await RoleService.getRoleById(req.params.id);
@@ -19,6 +40,11 @@ const getRoleById = async (req, res) => {
   }
 };
 
+/**
+ * Lấy danh sách tất cả roles
+ * GET /api/v1/roles
+ * Response: Array of roles
+ */
 const getAllRoles = async (req, res) => {
   try {
     const roles = await RoleService.getAllRoles();
@@ -28,6 +54,13 @@ const getAllRoles = async (req, res) => {
   }
 };
 
+/**
+ * Cập nhật thông tin role
+ * PUT /api/v1/roles/:id
+ * Params: id (ObjectId)
+ * Body: { name }
+ * Auth: Admin required
+ */
 const updateRole = async (req, res) => {
   try {
     const { name } = req.body;
@@ -38,6 +71,13 @@ const updateRole = async (req, res) => {
   }
 };
 
+/**
+ * Xóa role
+ * DELETE /api/v1/roles/:id
+ * Params: id (ObjectId)
+ * Auth: Admin required
+ * Response: 204 No Content
+ */
 const deleteRole = async (req, res) => {
   try {
     await RoleService.deleteRole(req.params.id);

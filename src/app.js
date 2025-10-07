@@ -1,12 +1,24 @@
 const express = require('express');
 const swaggerUi = require('swagger-ui-express');
-const userRoute = require('./routes/userRoute');
-const roleRoute = require('./routes/roleRoute');
-const categoryRoute = require('./routes/categoryRoute');
+const { PrismaClient } = require('@prisma/client');
+const routes = require('./routes');
 
 const app = express();
+const prisma = new PrismaClient();
 
 app.use(express.json());
+
+// Database connection check
+const checkDatabaseConnection = async () => {
+  try {
+    await prisma.$connect();
+    console.log('✅ Database connected successfully');
+    return true;
+  } catch (error) {
+    console.error('❌ Database connection failed:', error.message);
+    return false;
+  }
+};
 
 // Swagger setup
 const swaggerDocument = {
@@ -32,11 +44,29 @@ const swaggerDocument = {
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 // Routes
-app.use('/api/v1', userRoute);
-app.use('/api/v1', roleRoute);
-app.use('/api/v1', categoryRoute);
+app.use('/', routes);
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-});
+
+// Start server with database connection check
+const startServer = async () => {
+  try {
+    // Check database connection before starting server
+    const isConnected = await checkDatabaseConnection();
+
+    if (isConnected) {
+      app.listen(PORT, () => {
+        console.log(`🚀 Server is running on port ${PORT}`);
+        console.log(`📚 API Documentation: http://localhost:${PORT}/api-docs`);
+      });
+    } else {
+      console.error('❌ Cannot start server - Database connection failed');
+      process.exit(1);
+    }
+  } catch (error) {
+    console.error('❌ Server startup failed:', error.message);
+    process.exit(1);
+  }
+};
+
+startServer();

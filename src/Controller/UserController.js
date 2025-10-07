@@ -1,5 +1,20 @@
+/**
+ * UserController.js
+ * 
+ * Controller layer - Xử lý HTTP requests/responses cho User
+ * Chịu trách nhiệm: HTTP handling, validation, response formatting
+ * Gọi Service layer để thực hiện business logic
+ * 
+ * Luồng: HTTP Request → Controller → Service → Repository → Database
+ */
+
 const UserService = require('../Service/UserService');
 
+/**
+ * Tạo mới user
+ * POST /api/v1/users
+ * Body: { name, email, roleId }
+ */
 const createUser = async (req, res) => {
   try {
     const { name, email, roleId } = req.body;
@@ -10,6 +25,11 @@ const createUser = async (req, res) => {
   }
 };
 
+/**
+ * Lấy thông tin user theo ID
+ * GET /api/v1/users/:id
+ * Params: id (ObjectId)
+ */
 const getUserById = async (req, res) => {
   try {
     const user = await UserService.getUserById(req.params.id);
@@ -19,6 +39,11 @@ const getUserById = async (req, res) => {
   }
 };
 
+/**
+ * Lấy danh sách tất cả users
+ * GET /api/v1/users
+ * Response: Array of users with role information
+ */
 const getAllUsers = async (req, res) => {
   try {
     const users = await UserService.getAllUsers();
@@ -28,6 +53,12 @@ const getAllUsers = async (req, res) => {
   }
 };
 
+/**
+ * Cập nhật thông tin user
+ * PUT /api/v1/users/:id
+ * Params: id (ObjectId)
+ * Body: { name, email, roleId }
+ */
 const updateUser = async (req, res) => {
   try {
     const { name, email, roleId } = req.body;
@@ -38,6 +69,12 @@ const updateUser = async (req, res) => {
   }
 };
 
+/**
+ * Xóa user
+ * DELETE /api/v1/users/:id
+ * Params: id (ObjectId)
+ * Response: 204 No Content
+ */
 const deleteUser = async (req, res) => {
   try {
     await UserService.deleteUser(req.params.id);

@@ -1,31 +1,66 @@
-const CategoryRepository = require('../Repository/CategoryRepository');
+/**
+ * CategoryRepository.js
+ * 
+ * Repository layer - Data Access Layer cho Category
+ * Chịu trách nhiệm: Database operations, data persistence
+ * Sử dụng Prisma ORM để tương tác với MongoDB
+ * 
+ * Luồng: Service → Repository → Database (MongoDB)
+ */
 
-   class CategoryService {
-     async createCategory(categoryData) {
-       return await CategoryRepository.create(categoryData);
-     }
+const { PrismaClient } = require('@prisma/client');
+const prisma = new PrismaClient();
 
-     async getCategoryById(id) {
-       const category = await CategoryRepository.findById(id);
-       if (!category) throw new Error('Category not found');
-       return category;
-     }
+/**
+ * CategoryRepository class
+ * Chứa tất cả database operations liên quan đến Category
+ * Sử dụng PrismaClient để tương tác với MongoDB
+ */
+class CategoryRepository {
+  /**
+   * Tạo mới category trong database
+   * @param {Object} categoryData - { name, createdBy? }
+   * @returns {Object} Created category object
+   */
+  async create(categoryData) {
+    return await prisma.category.create({ data: categoryData });
+  }
 
-     async getAllCategories() {
-       return await CategoryRepository.findAll();
-     }
+  /**
+   * Tìm category theo ID
+   * @param {String} id - Category ObjectId
+   * @returns {Object} Category object
+   */
+  async findById(id) {
+    return await prisma.category.findUnique({ where: { id } });
+  }
 
-     async updateCategory(id, categoryData) {
-       const category = await CategoryRepository.update(id, categoryData);
-       if (!category) throw new Error('Category not found');
-       return category;
-     }
+  /**
+   * Lấy tất cả categories
+   * @returns {Array} Array of category objects
+   */
+  async findAll() {
+    return await prisma.category.findMany();
+  }
 
-     async deleteCategory(id) {
-       const category = await CategoryRepository.delete(id);
-       if (!category) throw new Error('Category not found');
-       return category;
-     }
-   }
+  /**
+   * Cập nhật category trong database
+   * @param {String} id - Category ObjectId
+   * @param {Object} categoryData - { name, createdBy? }
+   * @returns {Object} Updated category object
+   */
+  async update(id, categoryData) {
+    return await prisma.category.update({ where: { id }, data: categoryData });
+  }
 
-   module.exports = new CategoryService();
+  /**
+   * Xóa category khỏi database
+   * @param {String} id - Category ObjectId
+   * @returns {Object} Deleted category object
+   */
+  async delete(id) {
+    return await prisma.category.delete({ where: { id } });
+  }
+}
+
+module.exports = new CategoryRepository();

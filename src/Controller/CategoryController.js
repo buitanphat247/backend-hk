@@ -1,5 +1,20 @@
+/**
+ * CategoryController.js
+ * 
+ * Controller layer - Xử lý HTTP requests/responses cho Category
+ * Chịu trách nhiệm: HTTP handling, validation, response formatting
+ * Gọi Service layer để thực hiện business logic
+ * 
+ * Luồng: HTTP Request → Controller → Service → Repository → Database
+ */
+
 const CategoryService = require('../Service/CategoryService');
 
+/**
+ * Tạo mới category
+ * POST /api/v1/categories
+ * Body: { name, createdBy? }
+ */
 const createCategory = async (req, res) => {
   try {
     const { name, createdBy } = req.body;
@@ -10,6 +25,11 @@ const createCategory = async (req, res) => {
   }
 };
 
+/**
+ * Lấy thông tin category theo ID
+ * GET /api/v1/categories/:id
+ * Params: id (ObjectId)
+ */
 const getCategoryById = async (req, res) => {
   try {
     const category = await CategoryService.getCategoryById(req.params.id);
@@ -19,6 +39,11 @@ const getCategoryById = async (req, res) => {
   }
 };
 
+/**
+ * Lấy danh sách tất cả categories
+ * GET /api/v1/categories
+ * Response: Array of categories
+ */
 const getAllCategories = async (req, res) => {
   try {
     const categories = await CategoryService.getAllCategories();
@@ -28,6 +53,12 @@ const getAllCategories = async (req, res) => {
   }
 };
 
+/**
+ * Cập nhật thông tin category
+ * PUT /api/v1/categories/:id
+ * Params: id (ObjectId)
+ * Body: { name, createdBy? }
+ */
 const updateCategory = async (req, res) => {
   try {
     const { name, createdBy } = req.body;
@@ -38,6 +69,12 @@ const updateCategory = async (req, res) => {
   }
 };
 
+/**
+ * Xóa category
+ * DELETE /api/v1/categories/:id
+ * Params: id (ObjectId)
+ * Response: 204 No Content
+ */
 const deleteCategory = async (req, res) => {
   try {
     await CategoryService.deleteCategory(req.params.id);
